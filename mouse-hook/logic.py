@@ -85,4 +85,4 @@ def get_state_from_weight(weight):
 arg weight: numerical weight
 '''
 def get_strength_str_from_weight(weight):
-    return "I'm at {0}% strength.".format(get_strength_from_weight(weight))
+    return "I'm at {0}% strength now.".format(get_strength_from_weight(weight))
