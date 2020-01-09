@@ -28,7 +28,7 @@ States = [
     {
         'color': '141',
         'emoji': 'pleading_face',
-        'caption': "I'm hungry for code. Please feed me!!"
+        'caption': "I'm still hungry for code. Please feed me!!"
     },
     # Peckish
     {
