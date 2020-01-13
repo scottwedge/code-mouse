@@ -1,0 +1,5 @@
+echo PROJECTS
+cat /Users/morganeciot/.codemouse/projects
+
+echo HISTORY
+cat /Users/morganeciot/.codemouse/history
