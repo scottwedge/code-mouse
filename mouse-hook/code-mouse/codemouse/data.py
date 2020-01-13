@@ -52,9 +52,6 @@ def load_projects():
     path = get_path('projects')
     return open(path).read().splitlines()
 
-'''
-project\tcommit\ttimestamp\tchanges\tweight
-'''
 def load_history():
     path = get_path('history')
     history = []

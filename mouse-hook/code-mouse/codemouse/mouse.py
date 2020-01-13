@@ -1,21 +1,20 @@
 import math
+from datetime import datetime
 import codemouse.data as data
 import codemouse.printer as printer
-from datetime import datetime
 from codemouse.state import Dead, States, ExtraStates
 
-class Mouse:
-    Config = data.load_config()
+class Mouse():
+    '''Singleton'''
+    __instance = None
 
-    def __init__(self):
-        self.weight = None
-        self.strength = None
-        self.state = None
-        self.last_meal = None
-        self.history = None
-        self.projects = None
+    def __new__(cls):
+        if Mouse.__instance is None:
+            Mouse.__instance = object.__new__(cls)
+        return Mouse.__instance
     
     def load(self):
+        self.config = data.load_config()
         self.projects = data.load_projects()
         self.history = data.load_history()
         self.weight = self.get_last_weight_in_history()
@@ -29,15 +28,16 @@ class Mouse:
             loss = self.compute_weight_loss(last_meal, datetime.now())
             self.weight -= loss
         else:
-            self.weight = float(self.Config.start_weight)
+            self.weight = float(self.config.start_weight)
         
     '''
     Updates weight and history with latest commit. Called on post-commit hook
     '''
     def update_with_latest_commit(self, project_path):
         commit = data.get_latest_commit(project_path)
-        weight = self.compute_current_weight(commit)
-        commit.update_weight(weight)
+        gain = self.compute_weight_gain(commit)
+        self.weight += gain
+        commit.update_weight(self.weight)
         self.history.append(commit)
         data.update_history(commit)
 
@@ -46,7 +46,7 @@ class Mouse:
         print(val)
 
     def get_strength(self):
-        return int(self.weight / Mouse.Config.MAX_WEIGHT * 100)
+        return int(self.weight / self.config.MAX_WEIGHT * 100)
     
     def get_strength_str(self):
         return "I'm at {0}% strength!".format(self.get_strength())
@@ -66,7 +66,7 @@ class Mouse:
     def print_history(self):
         if self.history and len(self.history) > 0:
             for meal in self.history:
-                print(meal)
+                meal.pretty_print(self)
         else:
             print('Your mouse has not fed yet')
 
@@ -74,44 +74,46 @@ class Mouse:
         printer.print_output(self)
     
     def print_config(self):
-        self.Config.display()
+        self.config.display()
 
     '''
     returns discrete states based on numerical bins
     '''
     def get_state(self):
-        if self.weight == 0 or self.weight > Mouse.Config.MAX_WEIGHT_AFTER_FULL:
+        if self.weight == 0 or self.weight > self.config.MAX_WEIGHT_AFTER_FULL:
             return Dead
-        if self.weight <= Mouse.Config.MAX_WEIGHT:
-            f = self.weight / Mouse.Config.MAX_WEIGHT
+        if self.weight <= self.config.MAX_WEIGHT:
+            f = self.weight / self.config.MAX_WEIGHT
             states = States
         else:
-            f = self.weight / Mouse.Config.MAX_WEIGHT_AFTER_FULL
+            f = self.weight / self.config.MAX_WEIGHT_AFTER_FULL
             states = ExtraStates
         bucket = int(math.ceil(f / (1. / len(states)))) - 1
         return states[bucket]
+    
+    def get_color(self):
+        return self.get_state()['color']
+
+    def get_emoji(self):
+        return self.get_state()['emoji']
+    
+    def get_caption(self):
+        return self.get_state()['caption']
 
     def get_timestamp_diff(self, t1, t2):
         delta = t2 - t1
-        if Mouse.Config.DURATION == 'days':
+        if self.config.DURATION == 'days':
             return delta.days
-        if Mouse.Config.DURATION == 'hours':
+        if self.config.DURATION == 'hours':
             return delta.seconds / 3600
-        if Mouse.Config.DURATION == 'minutes':
+        if self.config.DURATION == 'minutes':
             return delta.seconds / 60
 
     def compute_weight_loss(self, t1, t2):
         duration_since_last = self.get_timestamp_diff(t1, t2)
-        loss = (duration_since_last - Mouse.Config.SATIATION_INTERVAL) * Mouse.Config.RATE_OF_DECAY
+        loss = (duration_since_last - self.config.SATIATION_INTERVAL) * self.config.RATE_OF_DECAY
         return float(loss) if loss > 0 else 0.
 
     def compute_weight_gain(self, commit):
-        return float(commit.changes) * Mouse.Config.RATE_OF_GROWTH
-
-    def compute_current_weight(self, commit):
-        t1 = commit.timestamp
-        t2 = datetime.now()
-        gain = self.compute_weight_gain(commit)
-        loss = self.compute_weight_loss(t1, t2)
-        self.weight = self.weight + gain - loss
-        return float(self.weight)
+        return float(commit.changes) * self.config.RATE_OF_GROWTH
+    
