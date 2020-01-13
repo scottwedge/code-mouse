@@ -35,8 +35,8 @@ def load_history():
             commit,
             datetime.fromtimestamp(float(timestamp)),
             message,
-            changes,
-            weight=weight
+            float(changes),
+            weight=float(weight)
         ))
     return history
 
