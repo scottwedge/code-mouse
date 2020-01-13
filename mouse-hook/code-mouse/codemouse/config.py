@@ -4,7 +4,7 @@ class Config:
     DURATION = 'days'               # everything will be computed in terms of this unit
     MIN_WEIGHT = 0
     MAX_WEIGHT = 100
-    START_WEIGHT = 30
+    START_WEIGHT = 1
     MAX_WEIGHT_AFTER_FULL = 250
     RATE_OF_DECAY = 1               # how quickly mouse loses weight without food
     RATE_OF_GROWTH = 1 / 20.        # for ex, gains 1 unit per 20 staged changes
@@ -19,16 +19,16 @@ class Config:
             Config.__instance.config = config
         return Config.__instance
 
-    def __init__(self, config=None):
-        self.config = config
-        self.set_duration()
+    # def __init__(self, config=None):
+    #     self.config = config
+    #     self.set_duration()
     
-    def set_duration(self):
-        duration = self.config.get('duration')
-        if duration and duration in ['days', 'hours', 'minutes']:
-            self.duration = duration
-        else:
-            self.duration = Config.DURATION
+    # def set_duration(self):
+    #     duration = self.config.get('duration')
+    #     if duration and duration in ['days', 'hours', 'minutes']:
+    #         self.duration = duration
+    #     else:
+    #         self.duration = Config.DURATION
         
     def __str__(self):
         return '''
