@@ -1,4 +1,5 @@
 import os
+import stat
 import configparser
 from datetime import datetime
 from subprocess import check_output
@@ -69,7 +70,6 @@ def load_history():
         ))
     return history
 
-# TODO check for chmod
 def add_project(path):
     # Check if path exists and is git repo
     if path is None:
@@ -86,6 +86,8 @@ def add_project(path):
     hfp = open(hook, 'a')
     hfp.write('codemouse update --project {0}\n'.format(path))
     hfp.close()
+    # Make file executable
+    os.chmod(hook, stat.S_IRWXU)
     # Update list of projects
     fp = open(get_path('projects'), 'a')
     fp.write('{0}\n'.format(path))
