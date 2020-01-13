@@ -79,18 +79,3 @@ elif command == 'edit':
 elif args.project:
     mouse.update_with_latest_commit(args.project)
     mouse.print_health()
-
-
-'''
-# Edit active projects or config options
-elif command == 'edit':
-    if args.opt == 'projects':
-        print('TODO: edit projects')
-    elif args.opt == 'config':
-        print('TODO: edit config')
-    else:
-        parser.print_help()
-# Otherwise this is an update command requiring project path
-elif args.project:
-    mouse.update_with_latest_commit(args.project)
-    mouse.print_health()'''
