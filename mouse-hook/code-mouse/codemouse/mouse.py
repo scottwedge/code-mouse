@@ -49,7 +49,7 @@ class Mouse:
         return int(self.weight / Mouse.Config.MAX_WEIGHT * 100)
     
     def get_strength_str(self):
-        return "I'm at {0}% strength now.".format(self.get_strength())
+        return "I'm at {0}% strength!".format(self.get_strength())
     
     def get_last_weight_in_history(self):
         if len(self.history) > 0:
