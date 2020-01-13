@@ -2,6 +2,16 @@
 
 A tamagotchi mouse for `git` that feeds on lines of code. 
 
+```
+git commit -m 'Print config'
+```
+![codemouse-sample](img/codemouse-sample.png)
+
+```
+git commit -m 'Update img'
+```
+![codemouse-sample2](img/codemouse-sample2.png)
+
 ## Requirements
 * Git
 * Python 3
