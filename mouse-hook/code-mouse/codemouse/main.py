@@ -78,3 +78,4 @@ elif command == 'edit':
 # Otherwise this is an update command requiring project path
 elif args.project:
     mouse.update_with_latest_commit(args.project)
+    mouse.print_health()

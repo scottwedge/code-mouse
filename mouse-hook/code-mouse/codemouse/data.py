@@ -29,13 +29,14 @@ def load_history():
     path = get_path('history')
     history = []
     for line in open(path).read().splitlines():
-        project, commit, timestamp, changes, weight = line.split('\t')
+        project, commit, timestamp, message, changes, weight = line.split('\t')
         history.append(Meal(
             project,
             commit,
-            datetime.fromtimestamp(int(timestamp)),
+            datetime.fromtimestamp(float(timestamp)),
+            message,
             changes,
-            weight
+            weight=weight
         ))
     return history
 
@@ -84,7 +85,7 @@ def update_projects():
                 
 def update_history(latest):
     fp = open(get_path('history'), 'a')
-    fp.write('{0}\n'.format(str(latest)))
+    fp.write('{0}\n'.format(repr(latest)))
     fp.close()
 
 def get_latest_commit(project_path):
@@ -93,7 +94,7 @@ def get_latest_commit(project_path):
         'config',
         '--get',
         'user.name',
-    ])
+    ]).strip().decode('utf-8')
     path = os.path.join(project_path, '.git')
     commit = check_output([
         'git',
@@ -104,14 +105,14 @@ def get_latest_commit(project_path):
         '--author={0}'.format(author),
         '--format="commit %H %at %s"',
         '--numstat',
-    ])
+    ]).decode('utf-8')
     return parse_commit(commit, project_path)
 
 def parse_commit(log_output, project_path):
     log_output = log_output.splitlines()
     commit_line = log_output[0].split()
     commit = commit_line[1]
-    timestamp = datetime.fromtimestamp(int(commit_line[2]))
+    timestamp = datetime.fromtimestamp(float(commit_line[2]))
     message = ' '.join(commit_line[3:]).strip('"')
     changes = 0
     # The next line is always empty

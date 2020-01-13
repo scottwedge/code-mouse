@@ -42,7 +42,8 @@ class Mouse:
         data.update_history(commit)
 
     def add_project(self, project_path=None):
-        print(data.add_project(project_path))
+        val = data.add_project(project_path)
+        print(val)
 
     def get_strength(self):
         return int(self.weight / Mouse.Config.MAX_WEIGHT * 100)
