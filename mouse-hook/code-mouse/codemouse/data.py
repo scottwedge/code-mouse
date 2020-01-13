@@ -13,22 +13,10 @@ def touch(fname):
     fp = open(get_path(fname), 'w')
     fp.close()
 
-# TODO use class instead
 def copy_config():
-    config = '''
-    [engine]
-    duration = 'days'
-    min_weight = 0.
-    max_weight = 100.
-    start_weight = 30.
-    max_weight_after_full = 250.
-    rate_of_decay = 1.
-    rate_of_growth = 1 / 20.
-    satiation_interval = 1.
-    '''
+    config = Config()
     fp = open(get_path('config'), 'w')
-    for line in config.splitlines():
-        fp.write('{0}\n'.format(line))
+    fp.write('[engine]\n{0}\n'.format(str(config)))
     fp.close()
 
 def is_git_repo(path):
@@ -46,7 +34,7 @@ def load_config():
     init_directory()
     config = configparser.ConfigParser()
     config.read(get_path('config'))
-    return Config(config['engine'])
+    return Config(config=config['engine'])
 
 def load_projects():
     path = get_path('projects')

@@ -32,9 +32,9 @@ def print_output(mouse):
     caption = mouse.get_caption()
     face = emoji.emojize(':{0}:'.format(state['emoji']))
     output_str = stylize('{0} {1}'.format(strength_str, caption), fg(color))
-    if strength > mouse.config.max_weight:
+    if strength > mouse.config.MAX_WEIGHT:
         output_str = emoji.emojize(':exclamation_mark:') + ' ' + output_str
     print('\n' + output_str + ' ' + mouse_emoji + ' ' + face)
-    if strength > 0 and strength <= mouse.config.max_weight:
+    if strength > 0 and strength <= mouse.config.MAX_WEIGHT:
         animate(strength, state, color)
     print('\n')

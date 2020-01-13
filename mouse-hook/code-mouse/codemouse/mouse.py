@@ -28,7 +28,7 @@ class Mouse():
             loss = self.compute_weight_loss(last_meal, datetime.now())
             self.weight -= loss
         else:
-            self.weight = float(self.config.start_weight)
+            self.weight = float(self.config.START_WEIGHT)
         
     '''
     Updates weight and history with latest commit. Called on post-commit hook
@@ -66,7 +66,7 @@ class Mouse():
     def print_history(self):
         if self.history and len(self.history) > 0:
             for meal in self.history:
-                meal.pretty_print(self.config.max_weight)
+                meal.pretty_print(self.config.MAX_WEIGHT)
         else:
             print('Your mouse has not fed yet')
 
@@ -74,7 +74,7 @@ class Mouse():
         printer.print_output(self)
     
     def print_config(self):
-        self.config.display()
+        print(self.config)
 
     '''
     returns discrete states based on numerical bins

@@ -1,4 +1,6 @@
 class Config:
+    '''Singleton'''
+
     DURATION = 'days'               # everything will be computed in terms of this unit
     MIN_WEIGHT = 0
     MAX_WEIGHT = 100
@@ -8,17 +10,18 @@ class Config:
     RATE_OF_GROWTH = 1 / 20.        # for ex, gains 1 unit per 20 staged changes
     SATIATION_INTERVAL = 1          # how long before RATE_OF_DECAY kicks in
 
-    # TODO set config params and make sure they are legal
-    def __init__(self, config):
+    __instance = None
+
+    # TODO set config params from file and make sure they are legal
+    def __new__(cls, config=None):
+        if Config.__instance is None:
+            Config.__instance = object.__new__(cls)
+            Config.__instance.config = config
+        return Config.__instance
+
+    def __init__(self, config=None):
         self.config = config
         self.set_duration()
-        self.min_weight = Config.MIN_WEIGHT
-        self.max_weight = Config.MAX_WEIGHT
-        self.start_weight = Config.START_WEIGHT
-        self.max_weight_after_full = Config.MAX_WEIGHT_AFTER_FULL
-        self.rate_of_decay = Config.RATE_OF_DECAY
-        self.rate_of_growth = Config.RATE_OF_GROWTH
-        self.satiation_interval = Config.SATIATION_INTERVAL
     
     def set_duration(self):
         duration = self.config.get('duration')
@@ -26,13 +29,25 @@ class Config:
             self.duration = duration
         else:
             self.duration = Config.DURATION
-
-    def display(self):
-        print('Duration: {0}'.format(self.duration))
-        print('Min weight: {0}'.format(self.min_weight))
-        print('Max weight: {0}'.format(self.max_weight))
-        print('Start weight: {0}'.format(self.start_weight))
-        print('Max weight after full: {0}'.format(self.max_weight_after_full))
-        print('Rate of decay: {0}'.format(self.rate_of_decay))
-        print('Rate of growth: {0}'.format(self.rate_of_growth))
-        print('Satiation interval: {0} {1}'.format(self.rate_of_decay, self.duration))
+        
+    def __str__(self):
+        return '''
+        duration = {0}
+        min_weight = {1}
+        max_weight = {2}
+        start_weight = {3}
+        max_weight_after_full = {4}
+        rate_of_decay = {5}
+        rate_of_growth = {6}
+        satiation_interval = {7} {8}
+        '''.format(
+            self.DURATION,
+            self.MIN_WEIGHT,
+            self.MAX_WEIGHT,
+            self.START_WEIGHT,
+            self.MAX_WEIGHT_AFTER_FULL,
+            self.RATE_OF_DECAY,
+            self.RATE_OF_GROWTH,
+            self.SATIATION_INTERVAL,
+            self.DURATION,
+        )
