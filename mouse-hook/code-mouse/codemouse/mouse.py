@@ -66,7 +66,7 @@ class Mouse():
     def print_history(self):
         if self.history and len(self.history) > 0:
             for meal in self.history:
-                meal.pretty_print(self)
+                meal.pretty_print(self.config.max_weight)
         else:
             print('Your mouse has not fed yet')
 

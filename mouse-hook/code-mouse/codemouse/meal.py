@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from colored import fg, stylize
 
+GREEN = '112'
 YELLOW = '220'
 
 class Meal:
@@ -16,15 +17,14 @@ class Meal:
     def update_weight(self, weight):
         self.weight = weight
     
-    def pretty_print(self, mouse):
+    def pretty_print(self, max_weight):
         project_name = os.path.basename(self.project)
         commit = 'commit {0} to {1} @ {2}'.format(self.commit[:6], project_name, self.timestamp)
         commit = stylize(commit, fg(YELLOW))
         changes = 'Changes: {0}'.format(self.changes)
         weight = 'Weight: {0}'.format(self.weight)
-        strength = mouse.get_strength()
-        color = mouse.get_color()
-        strength = 'Strength: ' + stylize('{0}%'.format(strength), fg(color))
+        strength = (self.weight / max_weight) * 100
+        strength = 'Strength: ' + stylize('{0}%'.format(strength), fg(GREEN))
         message = '\t{0}'.format(self.message)
         print('{0}\n{1}\n{2}\n{3}\n{4}\n'.format(
             commit,
