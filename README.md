@@ -51,7 +51,7 @@ codemouse list -o config
 * The mouse works using the post-commit command hooks across active projects, found in your local repository's `.git/hooks` directory
 * Application memory is kept in `$HOME/.codemouse`
 
-## Developing
+## Development
 ```
 # Using python3 virtualenv
 $ virtualenv venv
