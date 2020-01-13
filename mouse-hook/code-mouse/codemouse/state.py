@@ -1,5 +1,3 @@
-from enum import Enum
-
 '''
 Colors can be found at https://pypi.org/project/colored/
 Emojis can be found at https://unicode.org/emoji/charts/full-emoji-list.html

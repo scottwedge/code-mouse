@@ -1,4 +1,12 @@
 notes
+
+# Pytest and compiled pyc files
 __pycache__
 .pytest_cache
 *.pyc
+
+# Setuptools distribution folder.
+/dist/
+
+# Python egg metadata, regenerated from source files by setuptools.
+/*.egg-info

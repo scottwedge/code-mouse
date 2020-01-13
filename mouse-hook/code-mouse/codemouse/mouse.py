@@ -1,8 +1,8 @@
 import math
-import data
-import printer
+import codemouse.data as data
+import codemouse.printer as printer
 from datetime import datetime
-from state import Dead, States, ExtraStates
+from codemouse.state import Dead, States, ExtraStates
 
 class Mouse:
     Config = data.load_config()

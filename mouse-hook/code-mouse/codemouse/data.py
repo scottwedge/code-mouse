@@ -1,19 +1,48 @@
 import os
 import configparser
-from meal import Meal
-from config import Config
 from datetime import datetime
 from subprocess import check_output
+from codemouse.meal import Meal
+from codemouse.config import Config
 
-def get_path(fname, home=None):
-    if home is None:
-        home = os.getenv('HOME')
-    return os.path.join(home, '.codemouse', fname)
+def get_path(fname=''):
+    return os.path.join(os.getenv('HOME'), '.codemouse', fname)
+
+def touch(fname):
+    fp = open(get_path(fname), 'w')
+    fp.close()
+
+# TODO use class instead
+def copy_config():
+    config = '''
+    [engine]
+    duration = 'days'
+    min_weight = 0.
+    max_weight = 100.
+    start_weight = 30.
+    max_weight_after_full = 250.
+    rate_of_decay = 1.
+    rate_of_growth = 1 / 20.
+    satiation_interval = 1.
+    '''
+    fp = open(get_path('config'), 'w')
+    for line in config.splitlines():
+        fp.write('{0}\n'.format(line))
+    fp.close()
 
 def is_git_repo(path):
     return os.path.exists(os.path.join(path, '.git'))
 
+def init_directory():
+    path = get_path()
+    if not os.path.exists(path):
+        os.mkdir(path)
+        touch('projects')
+        touch('history')
+        copy_config()
+
 def load_config():
+    init_directory()
     config = configparser.ConfigParser()
     config.read(get_path('config'))
     return Config(config['engine'])
@@ -120,47 +149,3 @@ def parse_commit(log_output, project_path):
         i, d, _ = line.split('\t')
         changes += int(i) + int(d)
     return Meal(project_path, commit, timestamp, message, changes)
-
-'''
-arg log_output: result of call to
-    git log --author="author" --format="commit %H %at %s" --numstat
-
-commit ee57f69f622c0ade639b8748f3bc4d169e8343c 1578516928 test
-
-2       0       mouse-hook/commit.py
-16      0       mouse-hook/logic.py
-1       0       test
-commit dfe0df38bb16479a13976674f05f3ca4a5e6d1ee 1578514210 test
-
-1       0       test
-commit 1611f9efe69e46450890f1ca2ca2559cb9d4c735 1578513385 .gitignore
-
-1       0       .gitignore
-'''
-def parse_commits(log_output):
-    commits = []
-    lines = log_output.decode('utf-8').splitlines()
-    index = 0
-    while index < len(lines):
-        line = lines[index]
-        if line.startswith('"commit'):
-            commit_line = line.split()
-            commit = commit_line[1]
-            timestamp = datetime.fromtimestamp(int(commit_line[2]))
-            message = ' '.join(commit_line[3:]).strip('"')
-            # The next line is always empty
-            index += 2
-            line = lines[index]
-            insertions = 0
-            deletions = 0
-            while not line.startswith('"commit'):
-                i, d, _ = line.split('\t')
-                insertions += int(i)
-                deletions += int(d)
-                index += 1
-                if index == len(lines):
-                    break
-                line = lines[index]
-            # Keep list sorted in ascending order by time for clarity
-            commits.insert(0, Commit(commit, timestamp, message, insertions, deletions))
-    return commits
