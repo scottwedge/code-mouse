@@ -79,3 +79,6 @@ elif command == 'edit':
 elif args.project:
     mouse.update_with_latest_commit(args.project)
     mouse.print_health()
+
+
+# Test line
