@@ -22,6 +22,30 @@ Update (called by hook):
     $ codemouse update --project /path/to/project
 '''
 
+'''
+Usage:
+------
+List options:
+    $ codemouse
+    $ codemouse --help
+Activate codemouse for the current working git directory:
+    $ codemouse init
+View your mouse's vitals:
+    $ codemouse health
+View your mouse's feeding history:
+    $ codemouse log
+List active projects:
+    $ codemouse list -o projects
+Edit active projects:
+    $ codemouse edit -o projects
+List config variables:
+    $ codemouse list -o config
+Edit config:
+    $ codemouse edit -o config
+Update (called by hook):
+    $ codemouse update --project /path/to/project
+'''
+
 import emoji
 import argparse
 from codemouse.mouse import Mouse
