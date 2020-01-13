@@ -1,20 +1,17 @@
-import os
 import sys
 import time
 import emoji
+import shutil
 from colored import fg, bg, stylize
 
-MAX_BAR_SIZE = 55
+MAX_BAR_SIZE = 65
 ANIMATION_TIME = 0.3
 
 mouse_emoji = emoji.emojize(':mouse_face:')
 
 def get_bar_size():
-    try:
-        _, columns = os.popen('stty size', 'r').read().split()
-        return min(int(columns) - 10, MAX_BAR_SIZE)
-    except ValueError:
-        return MAX_BAR_SIZE
+    size = shutil.get_terminal_size((MAX_BAR_SIZE,))
+    return min(int(size.columns) - 10, MAX_BAR_SIZE)
 
 def animate(strength, state):
     strength_bar_total_size = get_bar_size()
