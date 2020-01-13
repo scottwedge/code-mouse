@@ -134,5 +134,9 @@ def parse_commit(log_output, project_path):
     # The next line is always empty
     for line in log_output[2:]:
         i, d, _ = line.split('\t')
-        changes += int(i) + int(d)
+        try:
+            changes += int(i) + int(d)
+        # This can happen when commit non-text datatypes
+        except ValueError:
+            print('Unable to feed on commit {0}'.format(commit))
     return Meal(project_path, commit, timestamp, message, changes)
